@@ -1,19 +1,43 @@
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-from jose import jwt
 from fastapi import Request, HTTPException, status
+from passlib.context import CryptContext
+from jose import jwt
 import os
 
 SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("EXPIRES_IN")
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+)
 
-def verify_password(plain_password, hashed_password):
+def validate_password_length(password: str) -> None:
+    if not isinstance(password, str):
+        raise ValueError("Password must be a string")
+
+    if len(password.encode("utf-8")) > 72:
+        raise ValueError(
+            "Password must not exceed 72 UTF-8 bytes when using bcrypt"
+        )
+
+
+def verify_password(
+    plain_password: str,
+    hashed_password: str,
+) -> bool:
+    validate_password_length(plain_password)
+
+    if not isinstance(hashed_password, str) or not hashed_password:
+        return False
+
     return pwd_context.verify(plain_password, hashed_password)
 
-def get_password_hash(password):
+
+def get_password_hash(password: str) -> str:
+    validate_password_length(password)
     return pwd_context.hash(password)
 
 def create_access_token(data: dict):
