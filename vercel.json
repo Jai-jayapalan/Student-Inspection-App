@@ -1,20 +1,27 @@
 {
-  "installCommand": "npm --prefix studentInspection-frontend install",
-  "buildCommand": "npm --prefix studentInspection-frontend run build",
-  "outputDirectory": "studentInspection-frontend/dist",
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "studentInspection-backend/app/**"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "backend": {
+      "root": "studentInspection-backend",
+      "framework": "fastapi"
+    },
+    "frontend": {
+      "root": "studentInspection-frontend",
+      "framework": "vite"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.py"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
