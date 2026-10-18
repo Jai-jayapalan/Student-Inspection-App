@@ -1,0 +1,20 @@
+{
+  "installCommand": "npm --prefix studentInspection-frontend install",
+  "buildCommand": "npm --prefix studentInspection-frontend run build",
+  "outputDirectory": "studentInspection-frontend/dist",
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "studentInspection-backend/app/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
